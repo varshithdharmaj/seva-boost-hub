@@ -1,10 +1,18 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
 interface AdminDashboardProps {
   onBack: () => void;
 }
+
+const mockApplications = [
+  { id: "PAN-12345678", name: "Rajesh Kumar", date: "2024-07-28", status: "In Progress" },
+  { id: "PAN-87654321", name: "Priya Sharma", date: "2024-07-27", status: "Approved" },
+  { id: "PAN-11223344", name: "Amit Patel", date: "2024-07-26", status: "Rejected" },
+];
 
 export const AdminDashboard = ({ onBack }: AdminDashboardProps) => {
   return (
@@ -23,7 +31,39 @@ export const AdminDashboard = ({ onBack }: AdminDashboardProps) => {
             <CardDescription>Monitor and manage all PAN applications</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">Admin features will be implemented here including application tracking, user management, and system analytics.</p>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Application ID</TableHead>
+                  <TableHead>Applicant Name</TableHead>
+                  <TableHead>Submission Date</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {mockApplications.map((app) => (
+                  <TableRow key={app.id}>
+                    <TableCell>{app.id}</TableCell>
+                    <TableCell>{app.name}</TableCell>
+                    <TableCell>{app.date}</TableCell>
+                    <TableCell>
+                      <Badge variant={
+                        app.status === "Approved" ? "default" :
+                        app.status === "Rejected" ? "destructive" :
+                        "secondary"
+                      }>{app.status}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Button variant="outline" size="sm">
+                        <Download className="h-4 w-4 mr-2" />
+                        Download Documents
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
       </div>

@@ -1,55 +1,78 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Chrome, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Smartphone, MessageSquare, Loader2 } from "lucide-react";
 import panLogo from "@/assets/pan-logo.png";
 import { FloatingElements } from "@/components/FloatingElements";
+import { useTranslation } from "react-i18next";
 
 interface AuthPageProps {
   onAuthenticated: () => void;
 }
 
 export const AuthPage = ({ onAuthenticated }: AuthPageProps) => {
-  const [isLogin, setIsLogin] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { t } = useTranslation();
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [otp, setOtp] = useState("");
+  const [isOtpSent, setIsOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    if (email && password) {
+  const handleSendOtp = async () => {
+    if (mobileNumber.length !== 10) {
       toast({
-        title: isLogin ? "Welcome back!" : "Account created!",
-        description: isLogin ? "You've been signed in successfully." : "Your account has been created successfully.",
-      });
-      onAuthenticated();
-    } else {
-      toast({
-        title: "Error",
-        description: "Please fill in all fields.",
+        title: "Invalid Mobile Number",
+        description: "Please enter a valid 10-digit mobile number.",
         variant: "destructive",
       });
+      return;
     }
+
+    setIsLoading(true);
+    // Simulate sending OTP
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // In a real app, you would call your backend to send an OTP.
+    // For this MVP, we'll just log it to the console.
+    const mockOtp = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log(`Mock OTP for ${mobileNumber}: ${mockOtp}`);
+
+    toast({
+      title: "OTP Sent",
+      description: `An OTP has been sent to ${mobileNumber}.`,
+    });
+
+    setIsOtpSent(true);
     setIsLoading(false);
   };
 
-  const handleGoogleAuth = () => {
+  const handleVerifyOtp = async () => {
+    if (otp.length !== 6) {
+      toast({
+        title: "Invalid OTP",
+        description: "Please enter the 6-digit OTP.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    // Simulate OTP verification
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // In a real app, you would verify the OTP with your backend.
+    // For this MVP, any 6-digit OTP is considered valid.
     toast({
-      title: "Google Sign In",
-      description: "Google authentication would be integrated here.",
+      title: "Authentication Successful",
+      description: "You have been successfully logged in.",
     });
     onAuthenticated();
+
+    setIsLoading(false);
   };
 
   return (
@@ -66,99 +89,87 @@ export const AuthPage = ({ onAuthenticated }: AuthPageProps) => {
               />
             </div>
             <CardTitle className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Welcome to PAN Seva
+              {t('auth.welcome')}
             </CardTitle>
             <CardDescription className="text-muted-foreground">
-              {isLogin ? "Sign in to continue" : "Create your account"}
+              {t('auth.signIn')}
             </CardDescription>
           </CardHeader>
           
-          <CardContent className="space-y-4">
-            <Button
-              onClick={handleGoogleAuth}
-              variant="outline"
-              className="w-full h-12 border-border/50 hover:bg-muted/50 transition-smooth"
-            >
-              <Chrome className="w-5 h-5 mr-2" />
-              Continue with Google
-            </Button>
-            
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <Separator className="w-full" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">or</span>
-              </div>
-            </div>
-            
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 border-border/50 focus:border-primary transition-smooth"
-                    required
-                  />
+          <CardContent className="space-y-6">
+            {!isOtpSent ? (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="mobile" className="text-sm font-medium">Mobile Number</Label>
+                  <div className="relative">
+                    <Smartphone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="mobile"
+                      type="tel"
+                      placeholder="98765 43210"
+                      value={mobileNumber}
+                      onChange={(e) => setMobileNumber(e.target.value.replace(/[^0-9]/g, '').slice(0, 10))}
+                      className="pl-10 h-12 border-border/50 focus:border-primary transition-smooth"
+                      required
+                    />
+                  </div>
                 </div>
+                <Button
+                  onClick={handleSendOtp}
+                  variant="gradient"
+                  className="w-full h-12"
+                  disabled={isLoading || mobileNumber.length !== 10}
+                >
+                  {isLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                  )}
+                  Send OTP
+                </Button>
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10 h-12 border-border/50 focus:border-primary transition-smooth"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3 h-4 w-4 text-muted-foreground hover:text-foreground transition-smooth"
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
+            ) : (
+              <div className="space-y-4">
+                <div className="space-y-2 text-center">
+                  <Label htmlFor="otp" className="text-sm font-medium">Enter OTP</Label>
+                  <p className="text-xs text-muted-foreground">
+                    An OTP was sent to {mobileNumber}.
+                    <Button variant="link" size="sm" className="p-0 h-auto ml-1" onClick={() => setIsOtpSent(false)}>
+                      Change number
+                    </Button>
+                  </p>
+                  <div className="flex justify-center">
+                    <InputOTP maxLength={6} value={otp} onChange={setOtp}>
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                        <InputOTPSlot index={3} />
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </div>
                 </div>
+                <Button
+                  onClick={handleVerifyOtp}
+                  variant="gradient"
+                  className="w-full h-12"
+                  disabled={isLoading || otp.length !== 6}
+                >
+                  {isLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
+                  Verify OTP & Sign In
+                </Button>
               </div>
-              
-              <Button 
-                type="submit" 
-                variant="gradient"
-                className="w-full h-12"
-                disabled={isLoading}
-              >
-                {isLoading ? "Please wait..." : isLogin ? "Sign In" : "Sign Up"}
-              </Button>
-            </form>
+            )}
           </CardContent>
           
           <CardFooter className="flex flex-col space-y-4 pt-6">
-            {isLogin && (
-              <button className="text-sm text-primary hover:underline transition-smooth">
-                Forgot password?
-              </button>
-            )}
-            
-            <div className="text-center text-sm text-muted-foreground">
-              {isLogin ? "Need an account?" : "Already have an account?"}
-              <button
-                onClick={() => setIsLogin(!isLogin)}
-                className="ml-1 text-primary hover:underline transition-smooth"
-              >
-                {isLogin ? "Sign up" : "Sign in"}
-              </button>
-            </div>
+            <p className="text-xs text-muted-foreground text-center">
+              By continuing, you agree to our Terms of Service and Privacy Policy.
+            </p>
           </CardFooter>
         </Card>
       </div>

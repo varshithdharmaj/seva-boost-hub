@@ -1,0 +1,32 @@
+{
+  "auth": {
+    "welcome": "पैन सेवा में आपका स्वागत है",
+    "signIn": "जारी रखने के लिए अपने मोबाइल नंबर से साइन इन करें"
+  },
+  "dashboard": {
+    "title": "पैन सेवा",
+    "subtitle": "सरलीकृत पैन आवेदन",
+    "steps": {
+      "personalInfo": "व्यक्तिगत जानकारी",
+      "documentUpload": "दस्तावेज़ अपलोड",
+      "payment": "भुगतान",
+      "status": "आवेदन की स्थिति"
+    },
+    "personalInfo": {
+      "title": "व्यक्तिगत जानकारी",
+      "description": "अपना विवरण भरें"
+    },
+    "documentUpload": {
+      "title": "दस्तावेज़ अपलोड",
+      "description": "आवश्यक दस्तावेज़ अपलोड करें"
+    },
+    "payment": {
+      "title": "भुगतान",
+      "description": "भुगतान पूरा करें"
+    },
+    "status": {
+      "title": "आवेदन की स्थिति",
+      "description": "अपने आवेदन को ट्रैक करें"
+    }
+  }
+}

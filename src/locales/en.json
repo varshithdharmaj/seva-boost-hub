@@ -1,0 +1,32 @@
+{
+  "auth": {
+    "welcome": "Welcome to PAN Seva",
+    "signIn": "Sign in with your mobile number to continue"
+  },
+  "dashboard": {
+    "title": "PAN Seva",
+    "subtitle": "Simplified PAN Application",
+    "steps": {
+      "personalInfo": "Personal Info",
+      "documentUpload": "Document Upload",
+      "payment": "Payment",
+      "status": "Application Status"
+    },
+    "personalInfo": {
+      "title": "Personal Info",
+      "description": "Fill in your details"
+    },
+    "documentUpload": {
+      "title": "Document Upload",
+      "description": "Upload required documents"
+    },
+    "payment": {
+      "title": "Payment",
+      "description": "Complete the payment"
+    },
+    "status": {
+      "title": "Application Status",
+      "description": "Track your application"
+    }
+  }
+}
