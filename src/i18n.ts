@@ -4,6 +4,7 @@ import LanguageDetector from "i18next-browser-languagedetector";
 
 import en from "./locales/en.json";
 import hi from "./locales/hi.json";
+import te from "./locales/te.json";
 
 const resources = {
   en: {
@@ -11,6 +12,9 @@ const resources = {
   },
   hi: {
     translation: hi,
+  },
+  te: {
+    translation: te,
   },
 };
 

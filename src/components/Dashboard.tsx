@@ -63,8 +63,11 @@ export const Dashboard = ({ onLogout }: DashboardProps) => {
     return <AdminDashboard onBack={() => setUserRole("user")} />;
   }
 
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
+  const changeLanguage = () => {
+    const languages = ['en', 'hi', 'te'];
+    const currentLanguageIndex = languages.indexOf(i18n.language);
+    const nextLanguageIndex = (currentLanguageIndex + 1) % languages.length;
+    i18n.changeLanguage(languages[nextLanguageIndex]);
   };
 
   return (
